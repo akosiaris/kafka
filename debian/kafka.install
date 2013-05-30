@@ -1,0 +1,16 @@
+avro-1.4.0.jar usr/share/java
+easymock-3.0.jar usr/share/java
+hadoop-core-0.20.2.jar usr/share/java
+jasper-compiler-5.5.12.jar usr/share/java
+jasper-runtime-5.5.12.jar usr/share/java
+jopt-simple-3.2.jar usr/share/java
+jsp-2.1-6.1.14.jar usr/share/java
+jsp-api-2.1-6.1.14.jar usr/share/java
+kfs-0.3.jar usr/share/java
+paranamer-ant-2.2.jar usr/share/java
+paranamer-generator-2.2.jar usr/share/java
+pig-0.8.0.jar usr/share/java
+scalatest-1.2.jar usr/share/java
+snappy-java-1.0.4.1.jar usr/share/java
+xmlenc-0.52.jar usr/share/java
+zkclient-0.1.jar usr/share/java

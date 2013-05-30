@@ -1,0 +1,6 @@
+usr/share/kafka/kafka-0.8.jar usr/share/kafka/kafka.jar
+usr/share/kafka/kafka-perf-0.8.jar usr/share/kafka/kafka-perf.jar
+usr/share/kafka/kafka-kafka-examples-0.8.jar usr/share/kafka/kafka-kafka-examples.jar
+usr/share/kafka/hadoop-consumer-0.8.jar usr/share/kafka/hadoop-consumer.jar
+usr/share/kafka/hadoop-producer-0.8.jar usr/share/kafka/hadoop-producer.jar
+

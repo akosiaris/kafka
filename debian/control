@@ -1,0 +1,18 @@
+Source: kafka
+Section: misc
+Priority: optional
+Maintainer: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Build-Depends: debhelper (>= 8), default-jdk, javahelper (>= 0.40ubuntu1), junit4, libasm3-java, libcglib-java, libcommons-cli-java, libcommons-codec-java, libcommons-collections-java, libcommons-compress-java, libcommons-el-java, libcommons-httpclient-java, libcommons-io-java, libcommons-lang-java, libcommons-logging-java, libcommons-net1-java, libhsqldb-java, libjackson-json-java, libjets3t-java, libjetty-java, libjoda-time-java, liblog4j1.2-java, libobjenesis-java, liboro-java, libparanamer-java, libqdox-java, libservlet2.5-java, libslf4j-java, libzookeeper-java, velocity
+Standards-Version: 3.9.2
+Homepage: http://kafka.apache.org
+
+Package: kafka
+Architecture: all
+Depends: ${java:Depends}, ${misc:Depends}
+Recommends: ${java:Recommends}
+Description: Apache Kafka is a distributed publish-subscribe messaging system
+ Apache Kafka is a distributed publish-subscribe messaging system. It is designed to support the following
+ * Persistent messaging with O(1) disk structures that provide constant time performance even with many TB of stored messages.
+ * High-throughput: even with very modest hardware Kafka can support hundreds of thousands of messages per second.
+ * Explicit support for partitioning messages over Kafka servers and distributing consumption over a cluster of consumer machines while maintaining per-partition ordering semantics.
+ * Support for parallel data load into Hadoop.
