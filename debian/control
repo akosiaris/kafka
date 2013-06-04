@@ -11,8 +11,13 @@ Architecture: all
 Depends: ${java:Depends}, ${misc:Depends}
 Recommends: ${java:Recommends}
 Description: Apache Kafka is a distributed publish-subscribe messaging system
- Apache Kafka is a distributed publish-subscribe messaging system. It is designed to support the following
- * Persistent messaging with O(1) disk structures that provide constant time performance even with many TB of stored messages.
- * High-throughput: even with very modest hardware Kafka can support hundreds of thousands of messages per second.
- * Explicit support for partitioning messages over Kafka servers and distributing consumption over a cluster of consumer machines while maintaining per-partition ordering semantics.
- * Support for parallel data load into Hadoop.
+ Apache Kafka is designed to support the following
+  * Persistent messaging with O(1) disk structures
+  that provide constant time performance even with many TB of stored messages.
+  * High-throughput: even with very modest hardware Kafka can support hundreds
+  of thousands of messages per second.
+  * Explicit support for partitioning messages over Kafka servers and
+  distributing consumption over a cluster of consumer machines while
+  maintaining per-partition ordering semantics.
+  * Support for parallel data load into Hadoop.
+
