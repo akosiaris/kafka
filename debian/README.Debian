@@ -1,0 +1,7 @@
+kafka for Debian
+----------------
+This package is created using a custom build system based on Makefiles
+instead of the standard sbt build system used by upstream. The reason
+for this is to satisfy debian policy that no internet connection should
+be required during package building as well as security concers about
+the downloaded JAR files by sbt
