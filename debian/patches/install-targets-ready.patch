@@ -1,0 +1,121 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Wed, 29 May 2013 00:35:10 +0000
+Subject: install targets ready
+
+Install targets by default go to /usr/local/share/java, packaging
+system will probably override that
+---
+ Makefile                         |   13 +++++++------
+ contrib/hadoop-consumer/Makefile |    1 +
+ contrib/hadoop-producer/Makefile |    2 ++
+ core/Makefile                    |    8 +++++---
+ examples/Makefile                |    1 +
+ perf/Makefile                    |    1 +
+ 6 files changed, 17 insertions(+), 9 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index f84b5cd..0050eba 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,10 +3,16 @@ export JAVAC=javac
+ export MKDIR_P=mkdir -p
+ export RM_RF=rm -rf
+ export JAR=jar
++export INSTALL=install -D -m 644
+ 
+ # Figure this out as well as other dependencies
+ export SCALA_LIBRARY=/usr/share/java/scala-library-2.9.1.jar
+ 
++# DESTDIR
++export PREFIX=/usr/local
++export LIBPATH=$(PREFIX)/share/java
++export DESTDIR
++
+ # Release specifics
+ tag=$(shell git describe --abbrev=0)
+ ver=$(shell echo $(tag) | sed -e 's/kafka-//' -e 's/-incubating-candidate-[0-9]//')
+@@ -26,17 +32,12 @@ BUILDDIRS=$(SUBDIRS:%=build-%)
+ CLEANDIRS=$(SUBDIRS:%=clean-%)
+ INSTALLDIRS=$(SUBDIRS:%=install-%)
+ 
+-
+ all:	$(BUILDDIRS)
+ 
+ install:	all $(INSTALLDIRS)
+ 
+ clean:	$(CLEANDIRS)
+ 
+-jar: install
+-
+-package: jar
+-
+ $(BUILDDIRS): $(TARGET_PATH)
+ 	$(MAKE) -C $(@:build-%=%) all
+ 
+@@ -46,4 +47,4 @@ $(CLEANDIRS): $(TARGET_PATH)
+ $(INSTALLDIRS): $(TARGET_PATH)
+ 	$(MAKE) -C $(@:install-%=%) install
+ 
+-.PHONY: clean install all jar package
++.PHONY: clean install all
+diff --git a/contrib/hadoop-consumer/Makefile b/contrib/hadoop-consumer/Makefile
+index a8550fd..93363f6 100644
+--- a/contrib/hadoop-consumer/Makefile
++++ b/contrib/hadoop-consumer/Makefile
+@@ -16,4 +16,5 @@ clean:
+ 
+ install:	all
+ 	$(JAR) cfv hadoop-consumer-$(VERSION).jar -C target .
++	$(INSTALL) -o root -g root hadoop-consumer-$(VERSION).jar $(DESTDIR)$(LIBPATH)/hadoop-consumer-$(VERSION).jar
+ 
+diff --git a/contrib/hadoop-producer/Makefile b/contrib/hadoop-producer/Makefile
+index 07a4dd6..38a3ef0 100644
+--- a/contrib/hadoop-producer/Makefile
++++ b/contrib/hadoop-producer/Makefile
+@@ -16,3 +16,5 @@ clean:
+ 
+ install:	all
+ 	$(JAR) cfve hadoop-producer-$(VERSION).jar kafka.bridge.examples.TextPublisher -C target .
++	$(INSTALL) -o root -g root hadoop-producer-$(VERSION).jar $(DESTDIR)$(LIBPATH)/hadoop-producer-$(VERSION).jar
++
+diff --git a/core/Makefile b/core/Makefile
+index 0a3c497..9118452 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -1,5 +1,5 @@
+-SOURCES=$(shell find -name "*.scala" -or -name "*.java")
+-JAVA_SOURCES=$(shell find -name "*.java")
++SOURCES=$(shell find src/main -name "*.scala" -or -name "*.java")
++JAVA_SOURCES=$(shell find src/main -name "*.java")
+ 
+ TARGET_PATH=$(CURDIR)/target
+ JAVA_CLASSPATH=$(CLASSPATH):$(TARGET_PATH)
+@@ -13,6 +13,8 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
++	$(RM_RF) kafka-$(VERSION).jar
+ 
+ install:
+-	true
++	$(JAR) cfvm kafka-$(VERSION).jar manifest -C target .
++	$(INSTALL) -o root -g root kafka-$(VERSION).jar $(DESTDIR)$(LIBPATH)/kafka-$(VERSION).jar
+diff --git a/examples/Makefile b/examples/Makefile
+index 56bf457..b9d9fc5 100644
+--- a/examples/Makefile
++++ b/examples/Makefile
+@@ -16,3 +16,4 @@ clean:
+ 
+ install:	all
+ 	$(JAR) cfv kafka-java-examples-$(VERSION).jar -C target .
++	$(INSTALL) -o root -g root kafka-java-examples-$(VERSION).jar $(DESTDIR)$(LIBPATH)/kafka-java-examples-$(VERSION).jar
+diff --git a/perf/Makefile b/perf/Makefile
+index 1e84942..de7cc74 100644
+--- a/perf/Makefile
++++ b/perf/Makefile
+@@ -17,3 +17,4 @@ clean:
+ 
+ install:	all
+ 	$(JAR) cfv kafka-perf-$(VERSION).jar -C target .
++	$(INSTALL) -o root -g root kafka-perf-$(VERSION).jar $(DESTDIR)$(LIBPATH)/kafka-perf-$(VERSION).jar
+-- 

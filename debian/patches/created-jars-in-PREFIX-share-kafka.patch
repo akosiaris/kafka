@@ -1,0 +1,23 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Thu, 30 May 2013 21:57:18 +0000
+Subject: created jars in PREFIX/share/kafka
+
+Moving them from PREFIX/share/java as dictated by the Debian policy
+---
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 37b5dae..82b6d0c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -12,7 +12,7 @@ export SCALA_LIBRARY=/usr/share/java/scala-library-2.9.1.jar
+ ifndef PREFIX
+ export PREFIX=/usr/local
+ endif
+-export LIBPATH=$(PREFIX)/share/java
++export LIBPATH=$(PREFIX)/share/kafka
+ export DESTDIR
+ 
+ # Release specifics
+-- 

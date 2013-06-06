@@ -1,0 +1,117 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Tue, 28 May 2013 22:38:06 +0000
+Subject: First draft of release capable build system
+
+Examples project is the first one creating a usable .jar file
+Also be a little bit pedantic in some case about some commands
+and declare them in variables in toplevel Makefile
+
+Note: At some point incubation will be over for kafka. Will need to fix
+the expression then
+---
+ Makefile                         |   16 +++++++++++++---
+ contrib/hadoop-consumer/Makefile |    2 +-
+ contrib/hadoop-producer/Makefile |    2 +-
+ core/Makefile                    |    5 ++++-
+ examples/Makefile                |    5 ++++-
+ perf/Makefile                    |    2 +-
+ 6 files changed, 24 insertions(+), 8 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 595b152..9c75468 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,11 +1,17 @@
+ export SCALAC=scalac
+ export JAVAC=javac
+ export MKDIR_P=mkdir -p
+-export INSTALL=/usr/bin/install
++export RM_RF=rm -rf
++export JAR=jar
+ 
+-# Figure this out as well as others
++# Figure this out as well as other dependencies
+ export SCALA_LIBRARY=/usr/share/java/scala-library-2.9.1.jar
+ 
++# Release specifics
++tag=$(shell git describe --abbrev=0)
++ver=$(shell echo $(tag) | sed -e 's/kafka-//' -e 's/-incubating-candidate-[0-9]//')
++export VERSION=$(ver)
++
+ EXT_CLASSDIR:=$(CURDIR)/ext
+ EXT_CLASSJARS:=$(shell find $(EXT_CLASSDIR) -name "*.jar")
+ 
+@@ -27,6 +33,10 @@ install:	$(INSTALLDIRS) all
+ 
+ clean:	$(CLEANDIRS)
+ 
++jar: install
++
++package: jar
++
+ $(BUILDDIRS): $(TARGET_PATH)
+ 	$(MAKE) -C $(@:build-%=%) all
+ 
+@@ -36,4 +46,4 @@ $(CLEANDIRS): $(TARGET_PATH)
+ $(INSTALLDIRS): $(TARGET_PATH)
+ 	$(MAKE) -C $(@:install-%=%) install
+ 
+-.PHONY: clean install all
++.PHONY: clean install all jar package
+diff --git a/contrib/hadoop-consumer/Makefile b/contrib/hadoop-consumer/Makefile
+index a17fa0e..b61f9da 100644
+--- a/contrib/hadoop-consumer/Makefile
++++ b/contrib/hadoop-consumer/Makefile
+@@ -11,4 +11,4 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
+ 
+ clean:
+-	rm -rf $(TARGET_PATH)
++	$(RM_RF) $(TARGET_PATH)
+diff --git a/contrib/hadoop-producer/Makefile b/contrib/hadoop-producer/Makefile
+index a17fa0e..b61f9da 100644
+--- a/contrib/hadoop-producer/Makefile
++++ b/contrib/hadoop-producer/Makefile
+@@ -11,4 +11,4 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
+ 
+ clean:
+-	rm -rf $(TARGET_PATH)
++	$(RM_RF) $(TARGET_PATH)
+diff --git a/core/Makefile b/core/Makefile
+index 69f889f..0a3c497 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -12,4 +12,7 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 	$(JAVAC) -classpath $(JAVA_CLASSPATH) -d $(TARGET_PATH) $(JAVA_SOURCES)
+ 
+ clean:
+-	rm -rf $(TARGET_PATH)
++	$(RM_RF) $(TARGET_PATH)
++
++install:
++	true
+diff --git a/examples/Makefile b/examples/Makefile
+index 5487638..ac329c4 100644
+--- a/examples/Makefile
++++ b/examples/Makefile
+@@ -11,4 +11,7 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
+ 
+ clean:
+-	rm -rf $(TARGET_PATH)
++	$(RM_RF) $(TARGET_PATH)
++
++install:	all
++	$(JAR) cfv kafka-java-examples-$(VERSION).jar -C target .
+diff --git a/perf/Makefile b/perf/Makefile
+index 6325028..f3bca92 100644
+--- a/perf/Makefile
++++ b/perf/Makefile
+@@ -12,4 +12,4 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 	$(SCALAC) $(CFLAGS) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
+ 
+ clean:
+-	rm -rf $(TARGET_PATH)
++	$(RM_RF) $(TARGET_PATH)
+-- 

@@ -1,0 +1,33 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Thu, 30 May 2013 19:19:51 +0000
+Subject: Avoid redefining CLASSPATH, PREFIX if passed by caller
+
+---
+ Makefile |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index 1e7d927..37b5dae 100644
+--- a/Makefile
++++ b/Makefile
+@@ -9,7 +9,9 @@ export INSTALL=install -D -m 644
+ export SCALA_LIBRARY=/usr/share/java/scala-library-2.9.1.jar
+ 
+ # DESTDIR
++ifndef PREFIX
+ export PREFIX=/usr/local
++endif
+ export LIBPATH=$(PREFIX)/share/java
+ export DESTDIR
+ 
+@@ -30,7 +32,9 @@ EXT_CLASSDIR:=$(CURDIR)/ext
+ EXT_CLASSJARS:=$(shell find $(EXT_CLASSDIR) -name "*.jar")
+ export EXT_CLASSPATH:=$(shell echo $(EXT_CLASSJARS) | sed -e 's/ /:/g')
+ 
++ifndef CLASSPATH
+ export CLASSPATH=$(SYS_CLASSPATH):$(EXT_CLASSPATH)
++endif
+ export CFLAGS=-usejavacp
+ 
+ SUBDIRS=core examples contrib perf
+-- 

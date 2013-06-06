@@ -1,0 +1,18 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Wed, 29 May 2013 21:25:23 +0000
+Subject: Add extra manifest data for core kafka jar
+
+Through the use a jar manifest file
+---
+ core/manifest |    1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 core/manifest
+
+diff --git a/core/manifest b/core/manifest
+new file mode 100644
+index 0000000..988e8db
+--- /dev/null
++++ b/core/manifest
+@@ -0,0 +1 @@
++Class-Path: libs/jopt-simple-3.2.jar libs/zookeeper-3.3.4.jar libs/scala-library.jar libs/zkclient-0.1.jar libs/log4j-1.2.15.jar libs/snappy-java-1.0.4.1.jar
+-- 

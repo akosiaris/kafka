@@ -1,0 +1,120 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Thu, 30 May 2013 18:10:55 +0000
+Subject: Be somewhat more friendly with classpath
+
+CLASSPATH variable is meant to be overriden more by the caller. Some
+sane defaults are discovered but they should not be relied on too much.
+Also use the variable as is meant to be and now by passing the
+-classpath option to all calls.
+---
+ Makefile                         |   10 +++++++---
+ contrib/hadoop-consumer/Makefile |    2 +-
+ contrib/hadoop-producer/Makefile |    2 +-
+ core/Makefile                    |    6 +++---
+ examples/Makefile                |    2 +-
+ perf/Makefile                    |    2 +-
+ 6 files changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0f0fce2..1e7d927 100644
+--- a/Makefile
++++ b/Makefile
+@@ -18,16 +18,20 @@ tag=$(shell git describe --abbrev=0)
+ ver=$(shell echo $(tag) | sed -e 's/kafka-//' -e 's/-incubating-candidate-[0-9]//')
+ export VERSION=$(ver)
+ 
++# This is a fallback in case CLASSPATH is not defined by the caller
++# It will find and add to the CLASSPATH variable all jars in $(PREFIX)/usr/share
++# Hopefully CLASSPATH will be defined and this will be unused
+ SYS_CLASSDIR:=$(PREFIX)/share/java
+ SYS_CLASSJARS:=$(shell find $(SYS_CLASSDIR) -name "*.jar")
++export SYS_CLASSPATH:=$(shell echo $(SYS_CLASSJARS) | sed -e 's/ /:/g')
++
++# Same here, just this is done for the shipped jar dependencies. 
+ EXT_CLASSDIR:=$(CURDIR)/ext
+ EXT_CLASSJARS:=$(shell find $(EXT_CLASSDIR) -name "*.jar")
+-
+-export SYS_CLASSPATH:=$(shell echo $(SYS_CLASSJARS) | sed -e 's/ /:/g')
+ export EXT_CLASSPATH:=$(shell echo $(EXT_CLASSJARS) | sed -e 's/ /:/g')
+ 
+-export CFLAGS=-usejavacp
+ export CLASSPATH=$(SYS_CLASSPATH):$(EXT_CLASSPATH)
++export CFLAGS=-usejavacp
+ 
+ SUBDIRS=core examples contrib perf
+ 
+diff --git a/contrib/hadoop-consumer/Makefile b/contrib/hadoop-consumer/Makefile
+index 93363f6..b13c8c7 100644
+--- a/contrib/hadoop-consumer/Makefile
++++ b/contrib/hadoop-consumer/Makefile
+@@ -8,7 +8,7 @@ $(TARGET_PATH):
+ 	$(MKDIR_P) $(TARGET_PATH)
+ 
+ all:	$(SOURCES) $(TARGET_PATH)
+-	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++	$(JAVAC) -d $(TARGET_PATH) $(SOURCES)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
+diff --git a/contrib/hadoop-producer/Makefile b/contrib/hadoop-producer/Makefile
+index 38a3ef0..0e9b2ae 100644
+--- a/contrib/hadoop-producer/Makefile
++++ b/contrib/hadoop-producer/Makefile
+@@ -8,7 +8,7 @@ $(TARGET_PATH):
+ 	$(MKDIR_P) $(TARGET_PATH)
+ 
+ all:	$(SOURCES) $(TARGET_PATH)
+-	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++	$(JAVAC) -d $(TARGET_PATH) $(SOURCES)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
+diff --git a/core/Makefile b/core/Makefile
+index 9118452..4a5f122 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -2,14 +2,14 @@ SOURCES=$(shell find src/main -name "*.scala" -or -name "*.java")
+ JAVA_SOURCES=$(shell find src/main -name "*.java")
+ 
+ TARGET_PATH=$(CURDIR)/target
+-JAVA_CLASSPATH=$(CLASSPATH):$(TARGET_PATH)
++CLASSPATH:=$(CLASSPATH):$(TARGET_PATH)
+ 
+ $(TARGET_PATH):
+ 	$(MKDIR_P) $(TARGET_PATH)
+ 
+ all:	$(SOURCES) $(TARGET_PATH)
+-	$(SCALAC) $(CFLAGS) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
+-	$(JAVAC) -classpath $(JAVA_CLASSPATH) -d $(TARGET_PATH) $(JAVA_SOURCES)
++	$(SCALAC) $(CFLAGS) -d $(TARGET_PATH) $(SOURCES)
++	$(JAVAC) -d $(TARGET_PATH) $(JAVA_SOURCES)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
+diff --git a/examples/Makefile b/examples/Makefile
+index b9d9fc5..8d5e751 100644
+--- a/examples/Makefile
++++ b/examples/Makefile
+@@ -8,7 +8,7 @@ $(TARGET_PATH):
+ 	$(MKDIR_P) $(TARGET_PATH)
+ 
+ all:	$(SOURCES) $(TARGET_PATH)
+-	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++	$(JAVAC) -d $(TARGET_PATH) $(SOURCES)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
+diff --git a/perf/Makefile b/perf/Makefile
+index de7cc74..daeea0d 100644
+--- a/perf/Makefile
++++ b/perf/Makefile
+@@ -9,7 +9,7 @@ $(TARGET_PATH):
+ 	$(MKDIR_P) $(TARGET_PATH)
+ 
+ all:	$(SOURCES) $(TARGET_PATH)
+-	$(SCALAC) $(CFLAGS) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++	$(SCALAC) $(CFLAGS) -d $(TARGET_PATH) $(SOURCES)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
+-- 

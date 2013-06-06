@@ -1,0 +1,176 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Tue, 28 May 2013 21:41:23 +0000
+Subject: examples, perf, contrib Makefiles
+
+Also add clean targets in Makefiles and get ready for install targets
+following in a later commit
+---
+ Makefile                         |   27 +++++++++++++++++++++++----
+ contrib/Makefile                 |   23 +++++++++++++++++++++++
+ contrib/hadoop-consumer/Makefile |   14 ++++++++++++++
+ contrib/hadoop-producer/Makefile |   14 ++++++++++++++
+ core/Makefile                    |    3 +++
+ examples/Makefile                |   14 ++++++++++++++
+ perf/Makefile                    |    3 +++
+ 7 files changed, 94 insertions(+), 4 deletions(-)
+ create mode 100644 contrib/Makefile
+ create mode 100644 contrib/hadoop-consumer/Makefile
+ create mode 100644 contrib/hadoop-producer/Makefile
+ create mode 100644 examples/Makefile
+
+diff --git a/Makefile b/Makefile
+index 1d3b56a..595b152 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,6 +1,10 @@
+ export SCALAC=scalac
+ export JAVAC=javac
+ export MKDIR_P=mkdir -p
++export INSTALL=/usr/bin/install
++
++# Figure this out as well as others
++export SCALA_LIBRARY=/usr/share/java/scala-library-2.9.1.jar
+ 
+ EXT_CLASSDIR:=$(CURDIR)/ext
+ EXT_CLASSJARS:=$(shell find $(EXT_CLASSDIR) -name "*.jar")
+@@ -12,9 +16,24 @@ export CLASSPATH=$(EXT_CLASSPATH)
+ 
+ SUBDIRS=core examples contrib perf
+ 
+-.PHONY: $(SUBDIRS)
++BUILDDIRS=$(SUBDIRS:%=build-%)
++CLEANDIRS=$(SUBDIRS:%=clean-%)
++INSTALLDIRS=$(SUBDIRS:%=install-%)
++
++
++all:	$(BUILDDIRS)
++
++install:	$(INSTALLDIRS) all
++
++clean:	$(CLEANDIRS)
++
++$(BUILDDIRS): $(TARGET_PATH)
++	$(MAKE) -C $(@:build-%=%) all
++
++$(CLEANDIRS): $(TARGET_PATH)
++	$(MAKE) -C $(@:clean-%=%) clean
+ 
+-all:	$(SUBDIRS)
++$(INSTALLDIRS): $(TARGET_PATH)
++	$(MAKE) -C $(@:install-%=%) install
+ 
+-$(SUBDIRS): $(TARGET_PATH)
+-	$(MAKE) -C $@ all
++.PHONY: clean install all
+diff --git a/contrib/Makefile b/contrib/Makefile
+new file mode 100644
+index 0000000..4594363
+--- /dev/null
++++ b/contrib/Makefile
+@@ -0,0 +1,23 @@
++SUBDIRS=hadoop-consumer hadoop-producer
++BUILDDIRS=$(SUBDIRS:%=build-%)
++CLEANDIRS=$(SUBDIRS:%=clean-%)
++INSTALLDIRS=$(SUBDIRS:%=install-%)
++
++export CORE_TARGET_PATH=$(dir $(CURDIR))core/target
++
++.PHONY: all install clean
++
++all:	$(BUILDDIRS)
++install:	$(INSTALLDIRS) all
++clean:	$(CLEANDIRS)
++
++
++$(BUILDDIRS): $(TARGET_PATH)
++	$(MAKE) -C $(@:build-%=%)
++
++$(CLEANDIRS): $(TARGET_PATH)
++	$(MAKE) -C $(@:clean-%=%) clean
++
++$(INSTALLDIRS): $(TARGET_PATH)
++	$(MAKE) -C $(@:install-%=%) install
++
+diff --git a/contrib/hadoop-consumer/Makefile b/contrib/hadoop-consumer/Makefile
+new file mode 100644
+index 0000000..a17fa0e
+--- /dev/null
++++ b/contrib/hadoop-consumer/Makefile
+@@ -0,0 +1,14 @@
++SOURCES=$(shell find -name "*.java")
++
++LIB_CLASSJARS:=$(shell find lib -name "*.jar")
++TARGET_PATH=$(CURDIR)/target
++CLASSPATH:=$(CLASSPATH):$(SCALA_LIBRARY):$(LIB_CLASSJARS):$(CORE_TARGET_PATH)
++
++$(TARGET_PATH):
++	$(MKDIR_P) $(TARGET_PATH)
++
++all:	$(SOURCES) $(TARGET_PATH)
++	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++
++clean:
++	rm -rf $(TARGET_PATH)
+diff --git a/contrib/hadoop-producer/Makefile b/contrib/hadoop-producer/Makefile
+new file mode 100644
+index 0000000..a17fa0e
+--- /dev/null
++++ b/contrib/hadoop-producer/Makefile
+@@ -0,0 +1,14 @@
++SOURCES=$(shell find -name "*.java")
++
++LIB_CLASSJARS:=$(shell find lib -name "*.jar")
++TARGET_PATH=$(CURDIR)/target
++CLASSPATH:=$(CLASSPATH):$(SCALA_LIBRARY):$(LIB_CLASSJARS):$(CORE_TARGET_PATH)
++
++$(TARGET_PATH):
++	$(MKDIR_P) $(TARGET_PATH)
++
++all:	$(SOURCES) $(TARGET_PATH)
++	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++
++clean:
++	rm -rf $(TARGET_PATH)
+diff --git a/core/Makefile b/core/Makefile
+index 54478a5..69f889f 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -10,3 +10,6 @@ $(TARGET_PATH):
+ all:	$(SOURCES) $(TARGET_PATH)
+ 	$(SCALAC) $(CFLAGS) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
+ 	$(JAVAC) -classpath $(JAVA_CLASSPATH) -d $(TARGET_PATH) $(JAVA_SOURCES)
++
++clean:
++	rm -rf $(TARGET_PATH)
+diff --git a/examples/Makefile b/examples/Makefile
+new file mode 100644
+index 0000000..5487638
+--- /dev/null
++++ b/examples/Makefile
+@@ -0,0 +1,14 @@
++SOURCES=$(shell find -name "*.java")
++
++TARGET_PATH=$(CURDIR)/target
++CORE_TARGET_PATH=$(dir $(CURDIR))core/target
++CLASSPATH:=$(CLASSPATH):$(SCALA_LIBRARY):$(CORE_TARGET_PATH)
++
++$(TARGET_PATH):
++	$(MKDIR_P) $(TARGET_PATH)
++
++all:	$(SOURCES) $(TARGET_PATH)
++	$(JAVAC) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++
++clean:
++	rm -rf $(TARGET_PATH)
+diff --git a/perf/Makefile b/perf/Makefile
+index bb9560f..6325028 100644
+--- a/perf/Makefile
++++ b/perf/Makefile
+@@ -10,3 +10,6 @@ $(TARGET_PATH):
+ 
+ all:	$(SOURCES) $(TARGET_PATH)
+ 	$(SCALAC) $(CFLAGS) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++
++clean:
++	rm -rf $(TARGET_PATH)
+-- 

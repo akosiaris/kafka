@@ -1,0 +1,90 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Tue, 28 May 2013 23:33:55 +0000
+Subject: jar files produced for examples, perf, contrib
+
+And fix minor bugs here and there
+---
+ Makefile                         |    2 +-
+ contrib/Makefile                 |    2 +-
+ contrib/hadoop-consumer/Makefile |    5 +++++
+ contrib/hadoop-producer/Makefile |    4 ++++
+ examples/Makefile                |    1 +
+ perf/Makefile                    |    4 ++++
+ 6 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 9c75468..f84b5cd 100644
+--- a/Makefile
++++ b/Makefile
+@@ -29,7 +29,7 @@ INSTALLDIRS=$(SUBDIRS:%=install-%)
+ 
+ all:	$(BUILDDIRS)
+ 
+-install:	$(INSTALLDIRS) all
++install:	all $(INSTALLDIRS)
+ 
+ clean:	$(CLEANDIRS)
+ 
+diff --git a/contrib/Makefile b/contrib/Makefile
+index 4594363..c214ca3 100644
+--- a/contrib/Makefile
++++ b/contrib/Makefile
+@@ -13,7 +13,7 @@ clean:	$(CLEANDIRS)
+ 
+ 
+ $(BUILDDIRS): $(TARGET_PATH)
+-	$(MAKE) -C $(@:build-%=%)
++	$(MAKE) -C $(@:build-%=%) all
+ 
+ $(CLEANDIRS): $(TARGET_PATH)
+ 	$(MAKE) -C $(@:clean-%=%) clean
+diff --git a/contrib/hadoop-consumer/Makefile b/contrib/hadoop-consumer/Makefile
+index b61f9da..a8550fd 100644
+--- a/contrib/hadoop-consumer/Makefile
++++ b/contrib/hadoop-consumer/Makefile
+@@ -12,3 +12,8 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
++	$(RM_RF) hadoop-consumer-$(VERSION).jar
++
++install:	all
++	$(JAR) cfv hadoop-consumer-$(VERSION).jar -C target .
++
+diff --git a/contrib/hadoop-producer/Makefile b/contrib/hadoop-producer/Makefile
+index b61f9da..07a4dd6 100644
+--- a/contrib/hadoop-producer/Makefile
++++ b/contrib/hadoop-producer/Makefile
+@@ -12,3 +12,7 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
++	$(RM_RF) hadoop-producer-$(VERSION).jar
++
++install:	all
++	$(JAR) cfve hadoop-producer-$(VERSION).jar kafka.bridge.examples.TextPublisher -C target .
+diff --git a/examples/Makefile b/examples/Makefile
+index ac329c4..56bf457 100644
+--- a/examples/Makefile
++++ b/examples/Makefile
+@@ -12,6 +12,7 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
++	$(RM_RF) kafka-java-examples-$(VERSION).jar
+ 
+ install:	all
+ 	$(JAR) cfv kafka-java-examples-$(VERSION).jar -C target .
+diff --git a/perf/Makefile b/perf/Makefile
+index f3bca92..1e84942 100644
+--- a/perf/Makefile
++++ b/perf/Makefile
+@@ -13,3 +13,7 @@ all:	$(SOURCES) $(TARGET_PATH)
+ 
+ clean:
+ 	$(RM_RF) $(TARGET_PATH)
++	$(RM_RF) kafka-perf-$(VERSION).jar
++
++install:	all
++	$(JAR) cfv kafka-perf-$(VERSION).jar -C target .
+-- 

@@ -1,0 +1,13 @@
+Introducing-our-own-build-system.patch
+Fix-some-bugs-perf-Makefile-introduced.patch
+examples-perf-contrib-Makefiles.patch
+First-draft-of-release-capable-build-system.patch
+jar-files-produced-for-examples-perf-contrib.patch
+install-targets-ready.patch
+Add-extra-manifest-data-for-core-kafka-jar.patch
+Use-system-jars-if-possible.patch
+system-procured-jar-files-preferred-over-ours.patch
+Be-somewhat-more-friendly-with-classpath.patch
+Avoid-redefining-CLASSPATH-PREFIX-if-passed-by-calle.patch
+created-jars-in-PREFIX-share-kafka.patch
+installing-configuration-files-as-well.patch

@@ -1,0 +1,68 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Tue, 28 May 2013 18:10:54 +0000
+Subject: Fix some bugs, perf Makefile introduced
+
+We now compile java files as well producing the relevant .class files.
+perf module now compiles ok as well
+---
+ Makefile      |    3 ++-
+ core/Makefile |    3 +++
+ perf/Makefile |   12 ++++++++++++
+ 3 files changed, 17 insertions(+), 1 deletion(-)
+ create mode 100644 perf/Makefile
+
+diff --git a/Makefile b/Makefile
+index 6bf1985..1d3b56a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,4 +1,5 @@
+ export SCALAC=scalac
++export JAVAC=javac
+ export MKDIR_P=mkdir -p
+ 
+ EXT_CLASSDIR:=$(CURDIR)/ext
+@@ -9,7 +10,7 @@ export EXT_CLASSPATH:=$(shell echo $(EXT_CLASSJARS) | sed -e 's/ /:/g')
+ export CFLAGS=-usejavacp
+ export CLASSPATH=$(EXT_CLASSPATH)
+ 
+-SUBDIRS=core perf examples contrib
++SUBDIRS=core examples contrib perf
+ 
+ .PHONY: $(SUBDIRS)
+ 
+diff --git a/core/Makefile b/core/Makefile
+index 7e83413..54478a5 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -1,9 +1,12 @@
+ SOURCES=$(shell find -name "*.scala" -or -name "*.java")
++JAVA_SOURCES=$(shell find -name "*.java")
+ 
+ TARGET_PATH=$(CURDIR)/target
++JAVA_CLASSPATH=$(CLASSPATH):$(TARGET_PATH)
+ 
+ $(TARGET_PATH):
+ 	$(MKDIR_P) $(TARGET_PATH)
+ 
+ all:	$(SOURCES) $(TARGET_PATH)
+ 	$(SCALAC) $(CFLAGS) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
++	$(JAVAC) -classpath $(JAVA_CLASSPATH) -d $(TARGET_PATH) $(JAVA_SOURCES)
+diff --git a/perf/Makefile b/perf/Makefile
+new file mode 100644
+index 0000000..bb9560f
+--- /dev/null
++++ b/perf/Makefile
+@@ -0,0 +1,12 @@
++SOURCES=$(shell find -name "*.scala" -or -name "*.java")
++
++TARGET_PATH=$(CURDIR)/target
++
++CORE_TARGET_PATH=$(dir $(CURDIR))core/target
++CLASSPATH:=$(CLASSPATH):$(CORE_TARGET_PATH)
++
++$(TARGET_PATH):
++	$(MKDIR_P) $(TARGET_PATH)
++
++all:	$(SOURCES) $(TARGET_PATH)
++	$(SCALAC) $(CFLAGS) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
+-- 

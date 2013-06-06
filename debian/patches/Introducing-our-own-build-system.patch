@@ -1,0 +1,55 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Tue, 28 May 2013 17:46:15 +0000
+Subject: Introducing our own build system
+
+The first in a series of commits introducing our own build system for
+the kafka project based on calling scalac and a set of simple Makefiles.
+This commit contains the toplevel Makefile and the core Makefile
+---
+ Makefile      |   19 +++++++++++++++++++
+ core/Makefile |    9 +++++++++
+ 2 files changed, 28 insertions(+)
+ create mode 100644 Makefile
+ create mode 100644 core/Makefile
+
+diff --git a/Makefile b/Makefile
+new file mode 100644
+index 0000000..6bf1985
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,19 @@
++export SCALAC=scalac
++export MKDIR_P=mkdir -p
++
++EXT_CLASSDIR:=$(CURDIR)/ext
++EXT_CLASSJARS:=$(shell find $(EXT_CLASSDIR) -name "*.jar")
++
++export EXT_CLASSPATH:=$(shell echo $(EXT_CLASSJARS) | sed -e 's/ /:/g')
++
++export CFLAGS=-usejavacp
++export CLASSPATH=$(EXT_CLASSPATH)
++
++SUBDIRS=core perf examples contrib
++
++.PHONY: $(SUBDIRS)
++
++all:	$(SUBDIRS)
++
++$(SUBDIRS): $(TARGET_PATH)
++	$(MAKE) -C $@ all
+diff --git a/core/Makefile b/core/Makefile
+new file mode 100644
+index 0000000..7e83413
+--- /dev/null
++++ b/core/Makefile
+@@ -0,0 +1,9 @@
++SOURCES=$(shell find -name "*.scala" -or -name "*.java")
++
++TARGET_PATH=$(CURDIR)/target
++
++$(TARGET_PATH):
++	$(MKDIR_P) $(TARGET_PATH)
++
++all:	$(SOURCES) $(TARGET_PATH)
++	$(SCALAC) $(CFLAGS) -classpath $(CLASSPATH) -d $(TARGET_PATH) $(SOURCES)
+-- 

@@ -1,0 +1,49 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Tue, 4 Jun 2013 13:09:37 +0000
+Subject: installing configuration files as well
+
+---
+ Makefile        |    5 ++++-
+ config/Makefile |    9 +++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+ create mode 100644 config/Makefile
+
+diff --git a/Makefile b/Makefile
+index 82b6d0c..2b951e9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -12,6 +12,9 @@ export SCALA_LIBRARY=/usr/share/java/scala-library-2.9.1.jar
+ ifndef PREFIX
+ export PREFIX=/usr/local
+ endif
++ifndef SYSCONFDIR
++export SYSCONFDIR=/usr/local/etc/kafka
++endif
+ export LIBPATH=$(PREFIX)/share/kafka
+ export DESTDIR
+ 
+@@ -37,7 +40,7 @@ export CLASSPATH=$(SYS_CLASSPATH):$(EXT_CLASSPATH)
+ endif
+ export CFLAGS=-usejavacp
+ 
+-SUBDIRS=core examples contrib perf
++SUBDIRS=core examples contrib perf config
+ 
+ BUILDDIRS=$(SUBDIRS:%=build-%)
+ CLEANDIRS=$(SUBDIRS:%=clean-%)
+diff --git a/config/Makefile b/config/Makefile
+new file mode 100644
+index 0000000..211f667
+--- /dev/null
++++ b/config/Makefile
+@@ -0,0 +1,9 @@
++CONFFILES=consumer.properties log4j.properties producer.properties server.properties zookeeper.properties
++
++all:	
++
++clean:
++
++install:	all
++	$(MKDIR_P) $(DESTDIR)/$(SYSCONFDIR)
++	$(INSTALL) -o root -g root $(CONFFILES) $(DESTDIR)/$(SYSCONFDIR)
+-- 

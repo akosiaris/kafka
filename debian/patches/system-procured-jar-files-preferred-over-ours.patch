@@ -1,0 +1,22 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Wed, 29 May 2013 22:30:09 +0000
+Subject: system procured jar files preferred over ours
+
+---
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index e9c7803..0f0fce2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -27,7 +27,7 @@ export SYS_CLASSPATH:=$(shell echo $(SYS_CLASSJARS) | sed -e 's/ /:/g')
+ export EXT_CLASSPATH:=$(shell echo $(EXT_CLASSJARS) | sed -e 's/ /:/g')
+ 
+ export CFLAGS=-usejavacp
+-export CLASSPATH=$(EXT_CLASSPATH):$(SYS_CLASSPATH)
++export CLASSPATH=$(SYS_CLASSPATH):$(EXT_CLASSPATH)
+ 
+ SUBDIRS=core examples contrib perf
+ 
+-- 

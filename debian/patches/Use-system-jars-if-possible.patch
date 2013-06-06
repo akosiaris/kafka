@@ -1,0 +1,32 @@
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Wed, 29 May 2013 21:32:23 +0000
+Subject: Use system jars if possible
+
+If system jars can be found in prefix, use them
+---
+ Makefile |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 0050eba..e9c7803 100644
+--- a/Makefile
++++ b/Makefile
+@@ -18,13 +18,16 @@ tag=$(shell git describe --abbrev=0)
+ ver=$(shell echo $(tag) | sed -e 's/kafka-//' -e 's/-incubating-candidate-[0-9]//')
+ export VERSION=$(ver)
+ 
++SYS_CLASSDIR:=$(PREFIX)/share/java
++SYS_CLASSJARS:=$(shell find $(SYS_CLASSDIR) -name "*.jar")
+ EXT_CLASSDIR:=$(CURDIR)/ext
+ EXT_CLASSJARS:=$(shell find $(EXT_CLASSDIR) -name "*.jar")
+ 
++export SYS_CLASSPATH:=$(shell echo $(SYS_CLASSJARS) | sed -e 's/ /:/g')
+ export EXT_CLASSPATH:=$(shell echo $(EXT_CLASSJARS) | sed -e 's/ /:/g')
+ 
+ export CFLAGS=-usejavacp
+-export CLASSPATH=$(EXT_CLASSPATH)
++export CLASSPATH=$(EXT_CLASSPATH):$(SYS_CLASSPATH)
+ 
+ SUBDIRS=core examples contrib perf
+ 
+-- 
