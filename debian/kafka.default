@@ -1,3 +1,7 @@
+# whether to start or not ("yes", "no")
+KAFKA_START=no
+
+# JMX options
 KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
 
 # Memory sizes, and logging configuration

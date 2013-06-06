@@ -46,6 +46,7 @@ fi
 # Run kafka as this user ID and group ID
 KAFKA_USER=kafka
 KAFKA_GROUP=kafka
+KAFKA_START=yes
 
 JDK_DIRS="/usr/lib/jvm/default-java /usr/lib/jvm/java-6-sun /usr/lib/jvm/java-1.5.0-sun /usr/lib/j2sdk1.5-sun /usr/lib/j2sdk1.5-ibm"
 
@@ -57,7 +58,7 @@ for jdir in $JDK_DIRS; do
 done
 export JAVA_HOME
 
-# Directory where the Tomcat 6 binary distribution resides
+# Directory where the binary distribution resides
 KAFKA_HOME=/usr/share/kafka
 
 # Default Java options
@@ -112,6 +113,11 @@ case "$1" in
 	if [ -z "$JAVA_HOME" ]; then
 		log_failure_msg "no JDK found - please set JAVA_HOME"
 		exit 1
+	fi
+
+	if [ -n "KAFKA_START" -a "KAFKA_START" != "yes" ]; then
+		log_failure_msg "KAFKA_START not set to 'yes' in /etc/default/kafka, not starting"
+		exit 0
 	fi
 
 	log_daemon_msg "Starting $DESC" "$NAME"
