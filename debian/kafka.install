@@ -13,4 +13,4 @@ pig-0.8.0.jar usr/share/java
 scalatest-1.2.jar usr/share/java
 snappy-java-1.0.4.1.jar usr/share/java
 xmlenc-0.52.jar usr/share/java
-zkclient-0.1.jar usr/share/java
+zkclient-20120522.jar usr/share/java

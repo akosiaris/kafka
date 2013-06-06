@@ -8,7 +8,7 @@ ext/scalatest-1.2.jar
 ext/paranamer-ant-2.2.jar
 ext/paranamer-generator-2.2.jar
 ext/pig-0.8.0.jar
-ext/zkclient-0.1.jar
+ext/zkclient-20120522.jar
 ext/easymock-3.0.jar
 ext/jasper-compiler-5.5.12.jar
 ext/hadoop-core-0.20.2.jar
