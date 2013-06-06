@@ -92,7 +92,7 @@ kafka_sh() {
 		KAFKA_PID=\"$KAFKA_PID\"; \
 		CLASSPATH=\"$CLASSPATH\"; \
 		LANG=\"$LANG\"; \
-		\"$JAVA_HOME\" kafka.Kafka /etc/kafka/server.properties"
+		\"$JAVA_HOME\"/bin/java kafka.Kafka /etc/kafka/server.properties"
 
 	# Run as a daemon
 	set +e
@@ -119,7 +119,7 @@ case "$1" in
 		--user $KAFKA_USER --exec "$JAVA_HOME/bin/java" \
 		>/dev/null; then
 
-		KAFKA_sh start
+		kafka_sh start
         	if start-stop-daemon --test --start --pidfile "$KAFKA_PID" \
 			--user $KAFKA_USER --exec "$JAVA_HOME/bin/java" \
 			>/dev/null; then
