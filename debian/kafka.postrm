@@ -10,6 +10,7 @@ case "$1" in
     purge)
         deluser --quiet --system kafka >/dev/null || true
         deluser --quiet --group --system --only-if-empty kafka || true
+        rm -rf /var/log/kafka
         ;;
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
         ;;

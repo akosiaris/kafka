@@ -18,7 +18,8 @@ case "$1" in
                 --shell /bin/false \
                 kafka >/dev/null 2>/dev/null || :
         fi
-        # chown kafka log directory
+        # create kafka log directory
+        mkdir -p /var/log/kafka
         chown kafka:kafka /var/log/kafka
     ;;
 
