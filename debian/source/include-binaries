@@ -1,0 +1,16 @@
+ext/snappy-java-1.0.4.1.jar
+ext/jasper-runtime-5.5.12.jar
+ext/jsp-api-2.1-6.1.14.jar
+ext/avro-1.4.0.jar
+ext/kfs-0.3.jar
+ext/jsp-2.1-6.1.14.jar
+ext/scalatest-1.2.jar
+ext/paranamer-ant-2.2.jar
+ext/paranamer-generator-2.2.jar
+ext/pig-0.8.0.jar
+ext/zkclient-0.1.jar
+ext/easymock-3.0.jar
+ext/jasper-compiler-5.5.12.jar
+ext/hadoop-core-0.20.2.jar
+ext/xmlenc-0.52.jar
+ext/jopt-simple-3.2.jar
