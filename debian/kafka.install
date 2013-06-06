@@ -14,3 +14,5 @@ scalatest-1.2.jar usr/share/java
 snappy-java-1.0.4.1.jar usr/share/java
 xmlenc-0.52.jar usr/share/java
 zkclient-20120522.jar usr/share/java
+metrics-annotation-3.0.0-c0c8be71.jar usr/share/java
+metrics-core-3.0.0-c0c8be71.jar usr/share/java
