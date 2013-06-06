@@ -11,3 +11,4 @@ Be-somewhat-more-friendly-with-classpath.patch
 Avoid-redefining-CLASSPATH-PREFIX-if-passed-by-calle.patch
 created-jars-in-PREFIX-share-kafka.patch
 installing-configuration-files-as-well.patch
+allow-caller-to-set-our-version.patch

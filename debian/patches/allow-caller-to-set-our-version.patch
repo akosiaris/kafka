@@ -1,0 +1,29 @@
+From 856f1d7e8a7f140d9d841a2b4093fd6a05bb7c7b Mon Sep 17 00:00:00 2001
+From: Alexandros Kosiaris <akosiaris@wikimedia.org>
+Date: Thu, 6 Jun 2013 14:27:11 +0000
+Subject: [PATCH] allow caller to set our version
+
+The version discovery system is rather naive and will fail in many
+cases to correctly identify the version. Since this is not trivial to
+fix we allow the caller to override version and be done with it
+---
+ Makefile |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index 2b951e9..b2a9961 100644
+--- a/Makefile
++++ b/Makefile
+@@ -21,7 +21,9 @@ export DESTDIR
+ # Release specifics
+ tag=$(shell git describe --abbrev=0)
+ ver=$(shell echo $(tag) | sed -e 's/kafka-//' -e 's/-incubating-candidate-[0-9]//')
++ifndef VERSION
+ export VERSION=$(ver)
++endif
+ 
+ # This is a fallback in case CLASSPATH is not defined by the caller
+ # It will find and add to the CLASSPATH variable all jars in $(PREFIX)/usr/share
+-- 
+1.7.9.5
+
