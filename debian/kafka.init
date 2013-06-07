@@ -20,9 +20,8 @@ set -e
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 NAME="$(basename "$0" | sed 's/^[KS][0-9]\{2\}//')"
-DESC="Kafka distributed publish-subscribe messaging system"
+DESC="broker"
 DEFAULT=/etc/default/$NAME
-JVM_TMP=/tmp/kafka-$NAME-tmp
 
 if [ `id -u` -ne 0 ]; then
 	echo "You need root privileges to run this script"
@@ -85,24 +84,18 @@ kafka_sh() {
 
 	# Define the command to run kafka as a daemon
 	# set -a tells sh to export assigned variables to spawned shells.
-	# TODO: clear this up
-	KAFKA_SH="set -a; JAVA_HOME=\"$JAVA_HOME\"; source \"$DEFAULT\"; \
-		JAVA_OPTS=\"$JAVA_OPTS\"; \
-		KAFKA_OPTS=\"$KAFKA_OPTS\"; \
-		KAFKA_JMX_OPTS=\"$KAFKA_JMX_OPTS\"; \
-		KAFKA_PID=\"$KAFKA_PID\"; \
-		CLASSPATH=\"$CLASSPATH\"; \
-		LANG=\"$LANG\"; \
-		\"$JAVA_HOME\"/bin/java kafka.Kafka /etc/kafka/server.properties"
+	KAFKA_ARGS="$JAVA_OPTS \
+		$KAFKA_OPTS \
+		$KAFKA_JMX_OPTS \
+		-cp $CLASSPATH \
+		kafka.Kafka /etc/kafka/server.properties"
 
 	# Run as a daemon
 	set +e
-	touch "$KAFKA_PID"
 
-	chown $KAFKA_USER "$KAFKA_PID"
 	start-stop-daemon --start -b -u "$KAFKA_USER" -g "$KAFKA_GROUP" \
-		-c "$KAFKA_USER" -p "$KAFKA_PID" \
-		-x /bin/bash -- -c "$KAFKA_SH"
+		-c "$KAFKA_USER" -m -p "$KAFKA_PID" \
+		-x "$JAVA_HOME/bin/java" -- $KAFKA_ARGS
 	status="$?"
 	set +a -e
 	return $status
@@ -115,7 +108,7 @@ case "$1" in
 		exit 1
 	fi
 
-	if [ -n "KAFKA_START" -a "KAFKA_START" != "yes" ]; then
+	if [ -n "$KAFKA_START" -a "$KAFKA_START" != "yes" ]; then
 		log_failure_msg "KAFKA_START not set to 'yes' in /etc/default/kafka, not starting"
 		exit 0
 	fi
@@ -126,6 +119,7 @@ case "$1" in
 		>/dev/null; then
 
 		kafka_sh start
+		sleep 5
         	if start-stop-daemon --test --start --pidfile "$KAFKA_PID" \
 			--user $KAFKA_USER --exec "$JAVA_HOME/bin/java" \
 			>/dev/null; then
