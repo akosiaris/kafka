@@ -98,7 +98,7 @@ index 0a3c497..9118452 100644
  
  install:
 -	true
-+	$(JAR) cfvm kafka-$(VERSION).jar manifest -C target .
++	$(JAR) cfv kafka-$(VERSION).jar -C target .
 +	$(INSTALL) -o root -g root kafka-$(VERSION).jar $(DESTDIR)$(LIBPATH)/kafka-$(VERSION).jar
 diff --git a/examples/Makefile b/examples/Makefile
 index 56bf457..b9d9fc5 100644

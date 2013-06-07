@@ -4,7 +4,6 @@ examples-perf-contrib-Makefiles.patch
 First-draft-of-release-capable-build-system.patch
 jar-files-produced-for-examples-perf-contrib.patch
 install-targets-ready.patch
-Add-extra-manifest-data-for-core-kafka-jar.patch
 Use-system-jars-if-possible.patch
 system-procured-jar-files-preferred-over-ours.patch
 Be-somewhat-more-friendly-with-classpath.patch
