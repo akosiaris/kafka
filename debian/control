@@ -3,7 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Alexandros Kosiaris <akosiaris@wikimedia.org>
 Build-Depends: debhelper (>= 8), default-jdk, javahelper (>= 0.40ubuntu1), junit4, libasm3-java, libcglib-java, libcommons-cli-java, libcommons-codec-java, libcommons-collections-java, libcommons-compress-java, libcommons-el-java, libcommons-httpclient-java, libcommons-io-java, libcommons-lang-java, libcommons-logging-java, libcommons-net1-java, libhsqldb-java, libjackson-json-java, libjets3t-java, libjetty-java, libjoda-time-java, liblog4j1.2-java, libobjenesis-java, liboro-java, libparanamer-java, libqdox-java, libservlet2.5-java, libslf4j-java, libzookeeper-java, velocity
-Standards-Version: 3.9.2
+Standards-Version: 3.9.3
 Homepage: http://kafka.apache.org
 
 Package: kafka
